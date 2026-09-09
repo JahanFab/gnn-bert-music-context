@@ -1,0 +1,214 @@
+{
+  "mode": "cross_attention",
+  "n_test": 4332,
+  "genre_distribution": {
+    "classical": 920,
+    "electronic": 898,
+    "folk/country": 48,
+    "latin/world": 141,
+    "other": 1652,
+    "pop": 101,
+    "rock": 572
+  },
+  "mood_distribution": {
+    "calm": 249,
+    "other": 4083
+  },
+  "graph_coherence_mean": 1.0,
+  "graph_coherence_tau": 0.5,
+  "case_studies": [
+    {
+      "track_id": "38334",
+      "num_nodes": 12,
+      "num_edges": 54,
+      "graph_path": [
+        "seg0",
+        "seg3",
+        "seg2",
+        "seg1",
+        "seg5",
+        "seg6"
+      ],
+      "graph_coherence": 1.0,
+      "true_tags": [
+        "rock",
+        "pop",
+        "man",
+        "male voice",
+        "country"
+      ],
+      "top_predicted_tags": [
+        [
+          "pop",
+          0.7701164484024048
+        ],
+        [
+          "male vocal",
+          0.7091744542121887
+        ],
+        [
+          "rock",
+          0.6885759234428406
+        ],
+        [
+          "male",
+          0.4859464466571808
+        ],
+        [
+          "vocal",
+          0.42452067136764526
+        ],
+        [
+          "man",
+          0.3906992971897125
+        ],
+        [
+          "vocals",
+          0.3525809049606323
+        ],
+        [
+          "male voice",
+          0.34834012389183044
+        ]
+      ],
+      "top_attended_tokens": [
+        "you",
+        "in",
+        ":",
+        "me",
+        ":",
+        "let",
+        "is",
+        "title"
+      ],
+      "figure": "results/plots\\task3_case_1_38334.png"
+    },
+    {
+      "track_id": "5671",
+      "num_nodes": 20,
+      "num_edges": 100,
+      "graph_path": [
+        "seg3",
+        "seg9",
+        "seg4",
+        "seg2",
+        "seg10",
+        "seg18"
+      ],
+      "graph_coherence": 1.0,
+      "true_tags": [
+        "guitar"
+      ],
+      "top_predicted_tags": [
+        [
+          "guitar",
+          0.7686076164245605
+        ],
+        [
+          "slow",
+          0.3684615194797516
+        ],
+        [
+          "piano",
+          0.2793150842189789
+        ],
+        [
+          "strings",
+          0.13187947869300842
+        ],
+        [
+          "no vocal",
+          0.12444309145212173
+        ],
+        [
+          "no vocals",
+          0.11615438014268875
+        ],
+        [
+          "classical",
+          0.10997439175844193
+        ],
+        [
+          "soft",
+          0.08001426607370377
+        ]
+      ],
+      "top_attended_tokens": [
+        "abstracts",
+        "weaving",
+        "acoustic",
+        "##low",
+        ":",
+        ":",
+        ".",
+        "."
+      ],
+      "figure": "results/plots\\task3_case_2_5671.png"
+    },
+    {
+      "track_id": "45347",
+      "num_nodes": 8,
+      "num_edges": 42,
+      "graph_path": [
+        "seg0",
+        "seg7",
+        "seg1",
+        "seg6",
+        "seg5",
+        "seg3"
+      ],
+      "graph_coherence": 1.0,
+      "true_tags": [
+        "classical",
+        "strings",
+        "violin",
+        "flute"
+      ],
+      "top_predicted_tags": [
+        [
+          "classical",
+          0.9909868836402893
+        ],
+        [
+          "strings",
+          0.8588821291923523
+        ],
+        [
+          "violin",
+          0.8260992765426636
+        ],
+        [
+          "flute",
+          0.7796390056610107
+        ],
+        [
+          "classic",
+          0.504370927810669
+        ],
+        [
+          "fast",
+          0.3734101951122284
+        ],
+        [
+          "harpsichord",
+          0.16735650599002838
+        ],
+        [
+          "no vocals",
+          0.12225425988435745
+        ]
+      ],
+      "top_attended_tokens": [
+        "a",
+        ".",
+        "music",
+        ".",
+        "-",
+        "##rgo",
+        ".",
+        ":"
+      ],
+      "figure": "results/plots\\task3_case_3_45347.png"
+    }
+  ]
+}

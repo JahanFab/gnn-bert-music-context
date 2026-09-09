@@ -1,0 +1,66 @@
+{
+  "description": "Task 1 (MusicCaps caption->tag proxy), masked vs unmasked, both converged. pos_weight=true, ~72/13/15 split.",
+  "model": "bert-base-uncased",
+  "n_test": 752,
+  "num_labels": 50,
+  "unmasked": {
+    "bert_default_0.5": {
+      "macro_f1": 0.6785,
+      "micro_f1": 0.7004,
+      "auc_pr": 0.7649
+    },
+    "bert_tuned": {
+      "macro_f1": 0.7201,
+      "micro_f1": 0.751,
+      "auc_pr": 0.7649
+    },
+    "baseline_random_prior": {
+      "macro_f1": 0.0626,
+      "micro_f1": 0.0887,
+      "auc_pr": 0.0614
+    },
+    "baseline_majority": {
+      "macro_f1": 0.0178,
+      "micro_f1": 0.1748,
+      "auc_pr": 0.0614
+    },
+    "baseline_tfidf_logreg": {
+      "macro_f1": 0.6859,
+      "micro_f1": 0.7184,
+      "auc_pr": 0.741
+    },
+    "best_epoch": 29,
+    "epochs_run": 30,
+    "best_val_macro_f1": 0.6775
+  },
+  "masked": {
+    "bert_default_0.5": {
+      "macro_f1": 0.5114,
+      "micro_f1": 0.5399,
+      "auc_pr": 0.5329
+    },
+    "bert_tuned": {
+      "macro_f1": 0.5247,
+      "micro_f1": 0.557,
+      "auc_pr": 0.5329
+    },
+    "baseline_random_prior": {
+      "macro_f1": 0.0626,
+      "micro_f1": 0.0887,
+      "auc_pr": 0.0614
+    },
+    "baseline_majority": {
+      "macro_f1": 0.0178,
+      "micro_f1": 0.1748,
+      "auc_pr": 0.0614
+    },
+    "baseline_tfidf_logreg": {
+      "macro_f1": 0.5118,
+      "micro_f1": 0.5609,
+      "auc_pr": 0.5335
+    },
+    "best_epoch": 26,
+    "epochs_run": 29,
+    "best_val_macro_f1": 0.51
+  }
+}

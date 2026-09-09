@@ -1,0 +1,95 @@
+{
+  "_note": "Digest of results/metrics/*.json. Regenerate with python src/aggregate_metrics.py",
+  "task1_bert_tags": {
+    "dataset": "MusicCaps caption->tag proxy (top-50)",
+    "n_test": 752,
+    "unmasked": {
+      "bert_tuned_macro_f1": 0.7201,
+      "bert_tuned_micro_f1": 0.751,
+      "bert_auc_pr": 0.7649,
+      "tfidf_macro_f1": 0.6859,
+      "random_macro_f1": 0.0626,
+      "majority_macro_f1": 0.0178,
+      "best_epoch": 29
+    },
+    "masked": {
+      "bert_tuned_macro_f1": 0.5247,
+      "tfidf_macro_f1": 0.5118,
+      "best_epoch": 26
+    }
+  },
+  "task2_gnn_vs_cnn": {
+    "dataset": "GTZAN (10 genres, 150 test)",
+    "gnn_sage": {
+      "params": 105738,
+      "accuracy": 0.7533333333333333,
+      "macro_f1": 0.7498181321624037,
+      "top3_accuracy": 0.9066666666666666
+    },
+    "cnn_melspec_B2": {
+      "params": 1206826,
+      "accuracy": 0.82,
+      "macro_f1": 0.8222523625690543,
+      "top3_accuracy": 0.96
+    }
+  },
+  "task3_fusion_ablation": {
+    "dataset": "MagnaTagATune (top-50, 4332 test), tuned thresholds",
+    "bert_only": {
+      "macro_f1": 0.3665277558771825,
+      "micro_f1": 0.4118143000897495,
+      "auc_pr": 0.3652712361925265,
+      "best_epoch": 17,
+      "params": 71680562
+    },
+    "gnn_only": {
+      "macro_f1": 0.4220475672550508,
+      "micro_f1": 0.4471567841535,
+      "auc_pr": 0.40081593182321656,
+      "best_epoch": 10,
+      "params": 134066
+    },
+    "concat": {
+      "macro_f1": 0.439883801470405,
+      "micro_f1": 0.4830929511306495,
+      "auc_pr": 0.4497535567120625,
+      "best_epoch": 12,
+      "params": 71801522
+    },
+    "cross_attention": {
+      "macro_f1": 0.44287022360125383,
+      "micro_f1": 0.469999196765643,
+      "auc_pr": 0.4468006224804628,
+      "best_epoch": 9,
+      "params": 72031410
+    }
+  },
+  "task3_graph_coherence": {
+    "s_graph_at_tau_0.5": 0.999901739215879,
+    "edge_cosine_mean": 0.9532786011695862,
+    "verdict": "saturated - report the cosine distribution, not the scalar"
+  },
+  "task4_contrastive_retrieval": {
+    "dataset": "MagnaTagATune paired (4332 candidates)",
+    "best_epoch": 30,
+    "audio_to_caption": {
+      "R@1": 0.013388734995383195,
+      "R@5": 0.06948291782086796,
+      "R@10": 0.11149584487534626,
+      "mrr": 0.04641173532774091
+    },
+    "caption_to_audio": {
+      "R@1": 0.02100646352723915,
+      "R@5": 0.07756232686980609,
+      "R@10": 0.11449676823638043,
+      "mrr": 0.05425698761449587
+    },
+    "zero_shot_graph_macro_f1": 0.08391814725562888,
+    "zero_shot_caption_macro_f1": 0.0801365947026022
+  },
+  "musiccaps_availability": {
+    "nominal_clips": 5521,
+    "clips_present": 165,
+    "fraction_present": 0.0299
+  }
+}

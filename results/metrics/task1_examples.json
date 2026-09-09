@@ -1,0 +1,278 @@
+[
+  {
+    "ytid": "iaonijK95qA",
+    "caption": "The song is an instrumental. The tempo is slow with  a synth trumpet playing a lilting melody with supporting keyboard synth accompaniment and no percussion. The song is emotional and powerful. The song is a movie soundtrack.",
+    "true_tags": [
+      "emotional",
+      "instrumental music",
+      "slow tempo"
+    ],
+    "predicted_tags": [
+      "emotional",
+      "instrumental music",
+      "slow tempo"
+    ],
+    "correct": [
+      "emotional",
+      "instrumental music",
+      "slow tempo"
+    ],
+    "missed": [],
+    "spurious": [],
+    "top5_by_probability": [
+      [
+        "instrumental music",
+        0.9984052777290344
+      ],
+      [
+        "slow tempo",
+        0.9980151653289795
+      ],
+      [
+        "emotional",
+        0.989025890827179
+      ],
+      [
+        "poor audio quality",
+        0.4112030565738678
+      ],
+      [
+        "passionate",
+        0.40761256217956543
+      ]
+    ],
+    "top_attended_tokens": [
+      "slow",
+      "song",
+      "no",
+      "song",
+      ".",
+      "the",
+      "is",
+      "."
+    ],
+    "attention_plot": "results/plots\\task1_attention_1_iaonijK95qA.png"
+  },
+  {
+    "ytid": "OEIj1UX5ZRg",
+    "caption": "The low quality recording features a song that consists of pitch bend horn siren melody played over groovy piano chords, groovy bass, \"4 on the floor\" kick pattern, punchy snare and simple hi hats. At the end of the loop there is a short snare roll. The siren is very loud, and over time it sounds a bit uncomfortable, but it sounds fun and happy regardless - like something that kids would listen to",
+    "true_tags": [
+      "fun",
+      "groovy bass",
+      "happy",
+      "low quality",
+      "punchy snare"
+    ],
+    "predicted_tags": [
+      "fun",
+      "groovy bass",
+      "happy",
+      "low quality",
+      "punchy snare"
+    ],
+    "correct": [
+      "fun",
+      "groovy bass",
+      "happy",
+      "low quality",
+      "punchy snare"
+    ],
+    "missed": [],
+    "spurious": [],
+    "top5_by_probability": [
+      [
+        "groovy bass",
+        0.9967367053031921
+      ],
+      [
+        "low quality",
+        0.9961143732070923
+      ],
+      [
+        "happy",
+        0.9955217838287354
+      ],
+      [
+        "fun",
+        0.9875655770301819
+      ],
+      [
+        "punchy snare",
+        0.9624119997024536
+      ]
+    ],
+    "top_attended_tokens": [
+      "happy",
+      "bass",
+      "fun",
+      "##vy",
+      "is",
+      "punch",
+      ".",
+      "the"
+    ],
+    "attention_plot": "results/plots\\task1_attention_2_OEIj1UX5ZRg.png"
+  },
+  {
+    "ytid": "aTeOMq8ave8",
+    "caption": "This is a recording that was done outdoors and later had background music placed over it. There are the sounds of footsteps, and a young male saying something unintelligible. The track placed over it is a high octane rock song with fast electric bass playing, overdriven electric guitar strumming and a rock motif on the electric guitar.",
+    "true_tags": [
+      "electric guitar",
+      "energetic"
+    ],
+    "predicted_tags": [
+      "electric guitar",
+      "rock"
+    ],
+    "correct": [
+      "electric guitar"
+    ],
+    "missed": [
+      "energetic"
+    ],
+    "spurious": [
+      "rock"
+    ],
+    "top5_by_probability": [
+      [
+        "rock",
+        0.9835398197174072
+      ],
+      [
+        "electric guitar",
+        0.9776905179023743
+      ],
+      [
+        "fast tempo",
+        0.3662387430667877
+      ],
+      [
+        "energetic",
+        0.3249269723892212
+      ],
+      [
+        "loud",
+        0.29975610971450806
+      ]
+    ],
+    "top_attended_tokens": [
+      "rock",
+      "fast",
+      "a",
+      "bass",
+      "is",
+      "this",
+      "a",
+      "are"
+    ],
+    "attention_plot": "results/plots\\task1_attention_3_aTeOMq8ave8.png"
+  },
+  {
+    "ytid": "2xQuWif8axE",
+    "caption": "This is a live recording of an instrumental progressive metal piece. A solo is being played on the electric guitar at a very fast pace using the technique of shredding. Rapid jumps from medium to high range notes can be heard. The atmosphere is aggressive.",
+    "true_tags": [
+      "electric guitar",
+      "instrumental"
+    ],
+    "predicted_tags": [
+      "electric guitar",
+      "instrumental",
+      "live performance"
+    ],
+    "correct": [
+      "electric guitar",
+      "instrumental"
+    ],
+    "missed": [],
+    "spurious": [
+      "live performance"
+    ],
+    "top5_by_probability": [
+      [
+        "electric guitar",
+        0.9659806489944458
+      ],
+      [
+        "instrumental",
+        0.9153599143028259
+      ],
+      [
+        "live performance",
+        0.8971103429794312
+      ],
+      [
+        "loud",
+        0.7948106527328491
+      ],
+      [
+        "fast tempo",
+        0.7054378986358643
+      ]
+    ],
+    "top_attended_tokens": [
+      "electric",
+      "guitar",
+      "live",
+      "the",
+      "piece",
+      "solo",
+      "a",
+      "aggressive"
+    ],
+    "attention_plot": "results/plots\\task1_attention_4_2xQuWif8axE.png"
+  },
+  {
+    "ytid": "NsR60ehkHGA",
+    "caption": "This is a Swiss rap music piece. There is a male vocal rapping in the German language. The melody consists of a repeating theme played by a synth sound. A low-to-medium range string sample can be heard every now and then. The rhythmic background consists of an electronic drum beat which contains very faint clicking sounds added for texture. It is an urban sounding piece. This piece would fit perfe",
+    "true_tags": [
+      "electronic drums",
+      "groovy",
+      "male vocal"
+    ],
+    "predicted_tags": [
+      "electronic drums",
+      "male vocal"
+    ],
+    "correct": [
+      "electronic drums",
+      "male vocal"
+    ],
+    "missed": [
+      "groovy"
+    ],
+    "spurious": [],
+    "top5_by_probability": [
+      [
+        "electronic drums",
+        0.9990432858467102
+      ],
+      [
+        "male vocal",
+        0.9934297204017639
+      ],
+      [
+        "groovy",
+        0.4762691259384155
+      ],
+      [
+        "male voice",
+        0.269264817237854
+      ],
+      [
+        "energetic",
+        0.17954231798648834
+      ]
+    ],
+    "top_attended_tokens": [
+      "vocal",
+      "male",
+      "a",
+      "would",
+      "a",
+      "electronic",
+      "an",
+      "drum"
+    ],
+    "attention_plot": "results/plots\\task1_attention_5_NsR60ehkHGA.png"
+  }
+]
