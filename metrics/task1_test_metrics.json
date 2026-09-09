@@ -1,0 +1,67 @@
+{
+  "model": "bert-base-uncased",
+  "mask_aspect_spans": false,
+  "num_labels": 50,
+  "n_test": 752,
+  "bert_default_threshold": {
+    "macro_f1": 0.6784825205317752,
+    "micro_f1": 0.7003508771929825,
+    "macro_precision": 0.572754078516788,
+    "macro_recall": 0.8548562581707317,
+    "micro_precision": 0.5884433962264151,
+    "micro_recall": 0.8648180242634316,
+    "auc_pr": 0.7649417946400285,
+    "mean_predicted_tags": 4.51063829787234,
+    "mean_true_tags": 3.0691489361702127
+  },
+  "bert_tuned_threshold": {
+    "macro_f1": 0.7201249985406437,
+    "micro_f1": 0.7509931005644993,
+    "macro_precision": 0.7084898674457414,
+    "macro_recall": 0.7502841381749674,
+    "micro_precision": 0.7256565656565657,
+    "micro_recall": 0.7781629116117851,
+    "auc_pr": 0.7649417946400285,
+    "mean_predicted_tags": 3.291223404255319,
+    "mean_true_tags": 3.0691489361702127
+  },
+  "threshold_stats": {
+    "mean": 0.8360000848770142,
+    "min": 0.550000011920929,
+    "max": 0.949999988079071
+  },
+  "baseline_random_prior": {
+    "macro_f1": 0.06264957170981228,
+    "micro_f1": 0.08872696099442777,
+    "macro_precision": 0.0628080983453814,
+    "macro_recall": 0.06402562796574449,
+    "micro_precision": 0.08778625954198473,
+    "micro_recall": 0.08968804159445408,
+    "auc_pr": 0.06138297872340425,
+    "mean_predicted_tags": 3.1356382978723403,
+    "mean_true_tags": 3.0691489361702127
+  },
+  "baseline_majority": {
+    "macro_f1": 0.01781742573787887,
+    "micro_f1": 0.17484662576687116,
+    "macro_precision": 0.010611702127659575,
+    "macro_recall": 0.06,
+    "micro_precision": 0.1768617021276596,
+    "micro_recall": 0.17287694974003467,
+    "auc_pr": 0.06138297872340425,
+    "mean_predicted_tags": 3.0,
+    "mean_true_tags": 3.0691489361702127,
+    "top_n": 3
+  },
+  "baseline_tfidf_logreg": {
+    "macro_f1": 0.6859008897804877,
+    "micro_f1": 0.7184170471841704,
+    "macro_precision": 0.6159019229646087,
+    "macro_recall": 0.7945770511102862,
+    "micro_precision": 0.6404341926729986,
+    "micro_recall": 0.8180242634315424,
+    "auc_pr": 0.7410091760132506,
+    "mean_predicted_tags": 3.9202127659574466,
+    "mean_true_tags": 3.0691489361702127
+  }
+}
