@@ -1,0 +1,288 @@
+# CSE425 -- GNN-BERT Music Context Understanding
+# Configuration for Task 1 (Easy): BERT baseline for music tag understanding.
+
+seed: 42
+device: cuda            # cuda | cpu ; falls back to cpu automatically if unavailable
+
+paths:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  splits_dir: data/splits
+  results_dir: results
+  plots_dir: results/plots
+  metrics_dir: results/metrics
+  ckpt_dir: results/checkpoints
+
+data:
+  # MusicCaps caption -> tag proxy task (Section 4.1 of the spec).
+  # Text input  = expert natural-language caption
+  # Labels      = top-K most frequent aspects from `aspect_list` (multi-hot)
+  csv_name: musiccaps-public.csv
+  top_k_tags: 50          # K in the multi-label objective
+  min_tags_per_clip: 1    # drop clips with no positive label inside the top-K vocab
+  val_frac: 0.15          # fraction of the non-test portion held out for validation
+  test_frac: 0.15         # random test fraction when use_official_eval_split is false
+  # The official is_audioset_eval flag marks ~53% of usable clips as eval, leaving
+  # only ~2.2k for training. false => seeded random test_frac/val_frac split
+  # (~72/13/15 by ytid) so the fine-tune has ~3.6k training clips.
+  use_official_eval_split: false
+  # Aspect strings often appear VERBATIM inside the caption, which makes the proxy
+  # task partly a string-matching exercise. Set true to delete those exact spans
+  # from the input text and force real generalisation. Report both numbers.
+  mask_aspect_spans: false
+
+model:
+  # All three tasks that load BERT must name the SAME model: Task 3 and Task 4
+  # warm-start their text branch from the Task 1 checkpoint, and a mismatch
+  # silently loads nothing (the state dict is applied non-strictly).
+  name: bert-base-uncased         # or: distilbert-base-uncased (half the cost)
+  max_length: 128                 # spec: 128-256
+  dropout: 0.1
+  freeze_encoder: false           # true => linear probe on frozen CLS
+
+train:
+  epochs: 30                      # 8 was too few -- val Macro-F1 had not plateaued; early_stopping_patience below self-limits
+  batch_size: 128                 # sized for a 32 GB card at bf16
+  eval_batch_size: 256
+  lr_encoder: 2.0e-5
+  lr_head: 1.0e-3
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+  amp: true                       # mixed precision on CUDA
+  num_workers: 2
+  pos_weight: true                # re-weight positives by (neg/pos) per tag (clipped 20); helps rare-tag Macro-F1
+  early_stopping_patience: 3      # epochs without val macro-F1 improvement
+
+# --------------------------------------------------------------------------- #
+# Task 2 (Medium): GNN on music structure graphs, vs. CNN mel-spectrogram baseline
+# --------------------------------------------------------------------------- #
+task2:
+  dataset: gtzan                # gtzan | fma_small
+  gtzan_dir: data/raw/gtzan/genres_original
+  fma_dir: data/raw/fma_small
+  fma_metadata: data/raw/fma_metadata/tracks.csv
+  fma_subset: small
+  val_frac: 0.15                # used only when the dataset has no official split
+  test_frac: 0.15
+
+  audio:
+    sr: 22050
+    n_fft: 2048
+    hop_length: 512
+    n_mels: 128
+    n_mfcc: 20
+    n_chroma: 12
+    duration: 30.0              # seconds read per track (GTZAN clips are 30 s)
+    offset: 0.0
+    segmentation: beat         # was fixed -- both graph-density and GAT changes
+                                # left every graph at a uniform node count (11 for
+                                # GTZAN, 19 for MTAT), so the GNN's real advantage
+                                # over the CNN -- native variable-length input --
+                                # was never exercised. Spec explicitly allows
+                                # beat-synchronous segments (Sec 3).
+    segment_seconds: 5.0        # spec: 5-10 s windows
+    segment_overlap: 0.5        # window hop = (1 - overlap) * window
+    beats_per_segment: 8
+    min_segments: 4
+    normalize: true
+
+  graph:
+    type: segment               # segment | chord
+    temporal_edges: true        # edges between consecutive segments
+    sim_threshold: 0.95         # tau: cosine(MFCC/chroma) above this becomes an edge
+                                 # was 0.8 -- GTZAN graphs came out 92.8% dense (mean
+                                 # degree 9.28/10), so a node's neighbourhood ~= the
+                                 # whole graph and SAGE's mean-aggregate collapses
+                                 # into the readout. Raised so similarity edges are
+                                 # selective again.
+    max_sim_neighbors: 3        # was 8, same reasoning
+    undirected: true
+    chord_smooth_window: 9      # majority filter over frame-level chord ids
+    chord_self_transitions: false
+
+  model:
+    conv: gat                   # sage | gat | gcn
+                                 # was sage -- density fix confirmed edge-cosine
+                                 # stays saturated regardless of graph sparsity
+                                 # (src/diagnose_coherence.py), meaning SAGE's
+                                 # uniform mean-aggregate is smoothing node
+                                 # embeddings together rather than graph density.
+                                 # GAT learns per-neighbor attention weights
+                                 # instead of a uniform mean -- spec explicitly
+                                 # allows either (Sec 4.2: "GraphSAGE or GAT").
+    hidden: 128                 # must be divisible by `heads` when conv: gat
+    layers: 3
+    heads: 4
+    dropout: 0.3
+    readout: mean               # mean | max | sum | mean+max
+    residual: true
+
+  cnn:                          # baseline B2
+    n_frames: 256               # fixed crop width in mel frames (~6 s)
+    channels: [32, 64, 128, 256]
+    dropout: 0.3
+
+  train:
+    epochs: 60
+    batch_size: 32
+    lr: 1.0e-3
+    weight_decay: 1.0e-4
+    label_smoothing: 0.05
+    max_grad_norm: 1.0
+    amp: true
+    num_workers: 0               # plain DataLoader + pandas itertuples rows don't pickle for Windows spawn workers
+    early_stopping_patience: 12
+
+# --------------------------------------------------------------------------- #
+# Task 3 (Hard): GNN-BERT fusion for multi-context understanding
+# --------------------------------------------------------------------------- #
+task3:
+  dataset: magnatagatune        # musiccaps | fma_medium | magnatagatune
+  musiccaps_audio_dir: data/raw/musiccaps_audio
+  fma_dir: data/raw/fma_medium
+  fma_metadata: data/raw/fma_metadata/tracks.csv
+  fma_genres: data/raw/fma_metadata/genres.csv
+  fma_subset: medium
+  magnatagatune_dir: data/raw/magnatagatune/audio
+  magnatagatune_annotations: data/raw/magnatagatune/annotations_final.csv
+  magnatagatune_clip_info: data/raw/magnatagatune/clip_info_final.csv
+  top_k_tags: 50                # ignored for musiccaps: the Task 1 vocab is reused; magnatagatune tag vocab too
+  max_length: 128
+  # MagnaTagATune text source: "descriptive_tags" builds the caption from the
+  # clip's OWN non-label tags (instrument/mood/genre words outside the top-50) +
+  # title/artist -- genuine, non-leaking signal, ~39% of clips get real
+  # descriptors, the rest fall back to metadata. "metadata" = Artist/Album/Title
+  # only (the previous, weakest behaviour).
+  mtat_text_mode: descriptive_tags
+
+  # Optional emotion supervision for L_aux. DEAM clips carry valence/arousal but
+  # no text, so their tag loss is masked off -- see README before enabling.
+  use_deam: false
+  deam_audio_dir: data/raw/deam/audio
+  deam_annotations: data/raw/deam/annotations/static_annotations_averaged_songs_1_2000.csv
+
+  # MagnaTagATune clips are ~29 s. Use the whole clip with 3 s windows (50%
+  # overlap) -> ~18 nodes/graph, versus 10 nodes from the old 10 s / 2 s config
+  # (which was calibrated for MusicCaps' 10 s clips). More audio + more nodes for
+  # message passing to work with.
+  audio:
+    sr: 22050
+    n_fft: 2048
+    hop_length: 512
+    n_mels: 128
+    n_mfcc: 20
+    n_chroma: 12
+    duration: 29.0
+    segmentation: beat         # was fixed -- see task2.audio note
+    segment_seconds: 3.0
+    segment_overlap: 0.5
+    beats_per_segment: 4
+    min_segments: 3
+    normalize: true
+
+  graph:
+    type: segment               # segment | chord
+    temporal_edges: true
+    sim_threshold: 0.95         # was 0.8 -- same over-dense-graph fix as task2.graph
+    max_sim_neighbors: 3        # was 6
+    undirected: true
+    chord_smooth_window: 9
+    chord_self_transitions: false
+
+  model:
+    mode: concat                 # cross_attention | concat | gated | bert_only | gnn_only
+                                  # was cross_attention -- under beat-sync segmentation
+                                  # concat is now the best ablation (test Macro-F1 0.4483
+                                  # vs cross_attention's 0.4299); the two were the other
+                                  # way round under fixed-window segmentation (0.4466 vs
+                                  # 0.4476). See RESULTS.md beat-sync section -- flagged
+                                  # as needing a multi-seed check since the gap is small.
+    text_model: bert-base-uncased   # must match `model.name` for the warm start to load
+    gnn_conv: gat                # was sage -- see task2.model.conv note
+    gnn_hidden: 128
+    gnn_layers: 3
+    gnn_heads: 4
+    gnn_readout: mean
+    fusion_dim: 256
+    fusion_heads: 1             # 1 + no value projection == the spec equation exactly
+    dropout: 0.3
+    freeze_text_layers: 2       # spec Algorithm 3: backprop through "(partial) BERT"
+
+  loss:
+    alpha: 0.0                  # valence weight; raise above 0 only with DEAM enabled
+    beta: 0.0                   # arousal weight
+
+  train:
+    epochs: 20                  # was 15; bert_only had not plateaued. Other modes stop early via patience below
+    batch_size: 64
+    lr_text: 2.0e-5             # pretrained encoder
+    lr_rest: 1.0e-3             # GNN, fusion and heads
+    weight_decay: 0.01
+    warmup_ratio: 0.1
+    max_grad_norm: 1.0
+    amp: true
+    num_workers: 0              # PyG batching in workers is fragile on Windows
+    early_stopping_patience: 4
+
+  # Warm-start the text branch from the fine-tuned Task 1 encoder. Leave empty
+  # to start from raw pretrained BERT instead.
+  warm_start_task1_ckpt: results/checkpoints/task1_bert_best.pt
+
+  ablation_modes: [bert_only, gnn_only, concat, cross_attention]
+
+  analysis:
+    coherence_tau: 0.5          # tau in S_graph = (1/|E|) sum 1[cos(h_i,h_j) > tau]
+    coherence_sample: 200       # graphs sampled when averaging S_graph
+
+# --------------------------------------------------------------------------- #
+# Task 4 (Advanced): contrastive cross-modal MusicCaps alignment
+# --------------------------------------------------------------------------- #
+task4:
+  # Reuses the Task 3 paired dataset (data/processed/fusion/task3_fusion_*.pt);
+  # DEAM rows are dropped automatically since contrastive training needs captions.
+  max_length: 128
+  recall_ks: [1, 5, 10]
+  n_examples: 10                # qualitative caption -> clip examples (deliverable)
+  top_k: 3                      # retrieved clips shown per query
+  human_eval_raters: 5          # spec Section 6: minimum 5 listeners
+  zero_shot_prompt: "a music clip that sounds {tag}"
+  warm_start_task1_ckpt: results/checkpoints/task1_bert_best.pt
+
+  model:
+    text_model: bert-base-uncased   # must match `model.name` for the warm start to load
+    embed_dim: 256              # shared space both branches project into
+    gnn_conv: gat                # was sage -- see task2.model.conv note
+    gnn_hidden: 128
+    gnn_layers: 3
+    gnn_heads: 4
+    gnn_readout: mean
+    dropout: 0.1
+    freeze_text_layers: 2
+    temperature: 0.07           # tau in the InfoNCE denominator
+    learnable_temperature: false  # true => CLIP-style logit scale instead of fixed tau
+
+  train:
+    epochs: 30
+    # Every other item in the batch is a negative, so this is a modelling choice,
+    # not just a memory knob: 128 gives 127 negatives per step. Raise toward 256
+    # if `nvidia-smi` shows headroom -- retrieval keeps improving with more.
+    batch_size: 128
+    lr_text: 2.0e-5
+    lr_rest: 5.0e-4
+    weight_decay: 0.01
+    warmup_ratio: 0.1
+    max_grad_norm: 1.0
+    amp: true
+    num_workers: 0
+    symmetric_loss: true        # false => the one-directional spec equation
+    early_stopping_patience: 6
+
+eval:
+  default_threshold: 0.5
+  # Per-tag decision thresholds tuned on VALIDATION only, then frozen for test.
+  tune_thresholds: true
+  threshold_grid_start: 0.05
+  threshold_grid_stop: 0.95
+  threshold_grid_step: 0.05
+  n_examples: 5                   # qualitative predictions + attention maps
